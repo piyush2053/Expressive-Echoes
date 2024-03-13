@@ -15,3 +15,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.fade-in {
+  animation: fade-in 0.3s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+/* index.css */
+input:focus,
+textarea:focus,
+input:hover,
+textarea:hover {
+  border-color: #9ca3af; /* Change to the desired border color when active or hovered */
+  outline: none; /* Remove the default outline when focused */
+}

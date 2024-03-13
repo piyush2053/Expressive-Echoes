@@ -1,9 +1,13 @@
 import React from "react"
 import '../../index.css'
+import Header from "../../Components/Header.tsx"
 export default function About() {
     return (
-        <div className="border-b border-gray-200 dark:border-gray-750">
-           ABOUT
+        <div>
+            <Header />
+            <div className="fade-in ">
+                About
+            </div>
         </div>
     )
 }

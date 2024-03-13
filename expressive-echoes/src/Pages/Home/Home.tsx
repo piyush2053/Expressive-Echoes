@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react"
-import { URL } from '../../Utils/contants'
-import '../../index.css'
-import { useNavigate } from "react-router-dom"
-import Header from "../../Components/Header.tsx"
-import { Helmet } from "react-helmet-async"
-import { useProvider } from "../../Store/Provider.tsx"
+import React, { useEffect, useState } from "react";
+import { URL } from '../../Utils/contants.js';
+import '../../index.css';
+import { useNavigate } from "react-router-dom";
+import Header from "../../Components/Header.tsx";
+import { Helmet } from "react-helmet-async";
+import { useProvider } from "../../Store/Provider.tsx";
+
 export default function Home() {
-    const [blogs, setBlogs] = useState([])
+    const [blogs, setBlogs] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const { updateBlog } = useProvider();
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -18,28 +21,35 @@ export default function Home() {
                 });
                 if (response.ok) {
                     const result = await response.json();
-                    setBlogs(result)
-                    updateBlog(result)
+                    setBlogs(result);
+                    updateBlog(result);
                 } else {
                     console.error('Error checking workflow configuration:', response.statusText);
                 }
             } catch (error) {
-                console.log(error, 'error')
+                console.log(error, 'error');
             }
         };
         fetchData();
-    }, [])
-    const navigate = useNavigate()
+    }, [updateBlog]);
+
+    const navigate = useNavigate();
+
     const handleBlogPost = (title) => {
-        navigate(`/blog/${title}`)
-    }
+        navigate(`/blog/${title}`);
+    };
+
+    const filteredBlogs = blogs.filter((blog) =>
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <div className="bg-gray-100 dark:bg-gray-850">
+        <div>
             <Helmet>
                 <title>PlainBlogPost</title>
             </Helmet>
             <Header />
-            <main className="min-h-screen grid gap-12 lg:gap-0 lg:grid-cols-[300px_1fr] xl:grid-cols-[350px_1fr]">
+            <main className="min-h-screen fade-in">
                 <div className="px-4 lg:px-6 xl:col-span-2 xl:px-8">
                     <div className="space-y-12">
                         <div className="space-y-2">
@@ -47,22 +57,51 @@ export default function Home() {
                                 Recently Published
                             </h1>
                             <p className="text-gray-500 dark:text-gray-400">Where every post is a story waiting to be told</p>
+                            <div className="flex items-center space-x-2 py-5">
+                                <input
+                                    type="text"
+                                    placeholder="Search by title..."
+                                    className="py-2 px-7 rounded-full bg-black text-white w-full shadow-xl hover:shadow-none"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            {blogs.map((value) => {
-                                return (
-                                    <div className="space-y-2 cursor-pointer hover:bg-[#EEEEEE] rounded-lg p-2" onClick={() => handleBlogPost(value.title)}>
-                                        <img alt="blogThumbnail" className="h-20 w-40 rounded-lg" src={value?.thumbnail}></img>
+                        <div className="fade-in grid gap-4 sm:grid-cols-3">
+                            {filteredBlogs.length === 0 ? (
+                                <div className="text-center text-gray-500 dark:text-gray-400">
+                                    No results for "{searchTerm}"
+                                </div>
+                            ) : (
+                                filteredBlogs.map((value) => (
+                                    <div key={value.id} className="fade-in space-y-2 cursor-pointer hover:bg-[#EEEEEE] rounded-lg p-2" onClick={() => handleBlogPost(value.title)}>
+                                        <img alt="blogThumbnail" className="h-20 w-40 rounded-lg" src={value?.thumbnail} />
                                         <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
                                         <p className="truncate">{value?.content}</p>
                                         <p className="text-gray-500 dark:text-gray-400">Posted on {value.date}</p>
+                                        <div className="grid items-center gap-2 text-sm">
+                                            <div className="flex items-center space-x-2">
+                                                <img
+                                                    alt="Author"
+                                                    className="rounded-full"
+                                                    height={20}
+                                                    src={value?.userImage}
+                                                    style={{
+                                                        aspectRatio: "32/32",
+                                                        objectFit: "cover",
+                                                    }}
+                                                    width={20}
+                                                />
+                                                <p className="font-medium">{value?.author}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                )
-                            })}
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
             </main>
         </div>
-    )
+    );
 }
