@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header.tsx";
 import { Helmet } from "react-helmet-async";
 import { useProvider } from "../../Store/Provider.tsx";
+import { CircularProgress } from "@mui/material"; 
 
 interface Blog {
     id: number;
@@ -18,10 +19,12 @@ interface Blog {
 export default function Home() {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const { updateBlog } = useProvider();
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true)
             try {
                 const isLocalhost = window.location.href.includes('localhost');
                 const apiURL = isLocalhost ? URL.GETBLOGS_LOCAL : URL.GETBLOGS_PROD;
@@ -29,13 +32,16 @@ export default function Home() {
                     method: 'GET',
                 });
                 if (response.ok) {
+                    setIsLoading(false)
                     const result = await response.json();
                     setBlogs(result);
                     updateBlog(result);
                 } else {
+                    setIsLoading(false)
                     console.error('Error checking workflow configuration:', response.statusText);
                 }
             } catch (error) {
+                setIsLoading(false)
                 console.log(error, 'error');
             }
         };
@@ -77,7 +83,7 @@ export default function Home() {
                                 />
                             </div>
                         </div>
-                        <div className="fade-in grid gap-4 sm:grid-cols-3">
+                        {isLoading ? <CircularProgress /> : <div className="fade-in grid gap-4 sm:grid-cols-3">
                             {filteredBlogs.length === 0 ? (
                                 <div className="text-center text-gray-500 dark:text-gray-400">
                                     No results for "{searchTerm}"
@@ -108,7 +114,8 @@ export default function Home() {
                                     </div>
                                 ))
                             )}
-                        </div>
+                        </div>}
+
                     </div>
                 </div>
             </main>
