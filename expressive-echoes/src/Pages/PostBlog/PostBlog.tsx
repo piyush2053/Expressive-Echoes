@@ -4,17 +4,25 @@ import '../../index.css';
 import { URL } from '../../Utils/contants.js'
 import Header from "../../Components/Header.tsx";
 import { Tooltip } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface FormErrors {
     titleError: string;
     contentError: string;
     thumbnailError: string;
-    userImageError:string
+    userImageError: string
     authorError: string;
     emailError: string;
 }
 
 export default function PostBlog() {
+    const [openDialog, setOpenDialog] = useState(false);
     const [formData, setFormData] = useState({
         title: "",
         content: "",
@@ -35,6 +43,12 @@ export default function PostBlog() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
+    };
+    const navigate = useNavigate()
+    
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+        navigate('/');
     };
 
     const handleSubmit = () => {
@@ -74,7 +88,6 @@ export default function PostBlog() {
         }
 
         setFormErrors(errors);
-
         if (isValid) {
             const publishData = async () => {
                 const isLocalhost = window.location.href.includes('localhost');
@@ -89,6 +102,7 @@ export default function PostBlog() {
                 if (response.ok) {
                     const responsedata = await response.json()
                     console.log("Form submitted:", responsedata);
+                    setOpenDialog(true);
                 } else {
 
                 }
@@ -170,6 +184,16 @@ export default function PostBlog() {
                     <Tooltip title="Submitting this Content will Publish your Blog on the Website" arrow>
                         <button className="bg-[#212121] mb-10 py-1 px-3 rounded-lg text-white hover:text-white hover:bg-[#9E9E9E] w-[100px]" onClick={handleSubmit}>Submit</button>
                     </Tooltip>
+                    <Dialog open={openDialog} onClose={handleDialogClose}>
+                        <DialogTitle>Blog Published</DialogTitle>
+                        <DialogContent>
+                            <CheckCircleOutlineIcon fontSize="large" style={{ color: '#4CAF50', marginBottom: '10px' }} />
+                            <div>Your blog has been published successfully!</div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleDialogClose} color="primary">OK</Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             </div>
         </div>

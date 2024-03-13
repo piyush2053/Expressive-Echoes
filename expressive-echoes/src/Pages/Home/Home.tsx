@@ -6,8 +6,17 @@ import Header from "../../Components/Header.tsx";
 import { Helmet } from "react-helmet-async";
 import { useProvider } from "../../Store/Provider.tsx";
 
+interface Blog {
+    id: number;
+    title: string;
+    thumbnail: string;
+    content: string;
+    date: string;
+    userImage: string;
+    author: string;
+}
 export default function Home() {
-    const [blogs, setBlogs] = useState([]);
+    const [blogs, setBlogs] = useState<Blog[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const { updateBlog } = useProvider();
 
@@ -31,7 +40,8 @@ export default function Home() {
             }
         };
         fetchData();
-    }, [updateBlog]);
+        // eslint-disable-next-line 
+    }, []);
 
     const navigate = useNavigate();
 
