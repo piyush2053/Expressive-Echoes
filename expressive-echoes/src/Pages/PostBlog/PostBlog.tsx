@@ -10,7 +10,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 interface FormErrors {
     titleError: string;
@@ -187,7 +186,6 @@ export default function PostBlog() {
                     <Dialog open={openDialog} onClose={handleDialogClose}>
                         <DialogTitle>Blog Published</DialogTitle>
                         <DialogContent>
-                            <CheckCircleOutlineIcon fontSize="large" style={{ color: '#4CAF50', marginBottom: '10px' }} />
                             <div>Your blog has been published successfully!</div>
                         </DialogContent>
                         <DialogActions>
