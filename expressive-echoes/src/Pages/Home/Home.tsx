@@ -91,7 +91,7 @@ export default function Home() {
                             ) : (
                                 filteredBlogs.map((value) => (
                                     <div key={value.id} className="fade-in space-y-2 cursor-pointer hover:bg-[#EEEEEE] rounded-lg p-2" onClick={() => handleBlogPost(value.title)}>
-                                        <img alt="blogThumbnail" className="h-20 w-40 rounded-lg" src={value?.thumbnail} />
+                                        <img alt="blogThumbnail" className="h-20 rounded-lg" src={value?.thumbnail} />
                                         <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
                                         <p className="truncate">{value?.content}</p>
                                         <p className="text-gray-500 dark:text-gray-400">Posted on {value.date}</p>

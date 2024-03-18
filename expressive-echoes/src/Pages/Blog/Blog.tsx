@@ -64,7 +64,6 @@ export default function Blog() {
                         className="aspect-video rounded-lg object-cover overflow-hidden"
                         height={400}
                         src={SelectedBlog[0]?.thumbnail}
-                        width={550}
                     />
                     <div className="prose prose-gray max-w-none not-italic">
                         <p>{SelectedBlog[0]?.content}</p>
