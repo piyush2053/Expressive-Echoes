@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import '../../index.css';
-import { URL } from '../../Utils/contants.js'
+import { URL } from '../../Utils/constants.js'
 import { useProvider } from "../../Store/Provider.tsx";
 import Header from "../../Components/Header.tsx";
 

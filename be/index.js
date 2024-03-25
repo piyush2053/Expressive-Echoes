@@ -64,3 +64,17 @@ app.get('/getBlogs', async (req, res) => {
         res.status(500).send('Error getting documents');
     }
 });
+
+app.delete('/deleteBlog/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedBlog = await Blog.findByIdAndDelete(id);
+        if (!deletedBlog) {
+            return res.status(404).send('Blog not found');
+        }
+        res.status(200).send('Blog deleted successfully');
+    } catch (error) {
+        console.error('Error deleting blog: ', error);
+        res.status(500).send('Error deleting blog');
+    }
+});

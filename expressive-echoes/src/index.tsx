@@ -9,6 +9,9 @@ import Blog from './Pages/Blog/Blog.tsx';
 import { Provider } from './Store/Provider.tsx';
 import PostBlog from './Pages/PostBlog/PostBlog.tsx';
 import ErrorPage from './Pages/NotFound/NotFound.tsx';
+import Login from './Pages/Auth/Login/index.tsx';
+import Signup from './Pages/Auth/Signup/index.tsx';
+import Admin from './Pages/Admin/Admin.tsx';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,7 +19,10 @@ ReactDOM.render(
       <Provider>
         <Router>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Signup />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/contact" element={<About />} />
             <Route path="/blog/:title" element={<Blog />} />
             <Route path="/publish" element={<PostBlog />} />

@@ -9,7 +9,7 @@ export default function About() {
                 <title>Contact us</title>
             </Helmet>
             <Header />
-            <div className="fade-in px-5">
+            <div className="fade-in px-5 mb-10">
                 <h1 className="text-4xl font-bold tracking-tight lg:text-5xl xl:text-6xl mb-10 mt-10 ml-4">
                     Contact Us
                 </h1>

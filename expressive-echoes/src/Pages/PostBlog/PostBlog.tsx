@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import '../../index.css';
-import { URL } from '../../Utils/contants.js'
+import { URL } from '../../Utils/constants.js';
 import Header from "../../Components/Header.tsx";
 import { Tooltip } from '@mui/material';
 import { useNavigate } from "react-router-dom";
@@ -15,9 +15,6 @@ interface FormErrors {
     titleError: string;
     contentError: string;
     thumbnailError: string;
-    userImageError: string
-    authorError: string;
-    emailError: string;
 }
 
 export default function PostBlog() {
@@ -34,20 +31,18 @@ export default function PostBlog() {
         titleError: "",
         contentError: "",
         thumbnailError: "",
-        userImageError: "",
-        authorError: "",
-        emailError: "",
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
     };
-    const navigate = useNavigate()
-    
+
+    const navigate = useNavigate();
+
     const handleDialogClose = () => {
         setOpenDialog(false);
-        navigate('/');
+        navigate('/home');
     };
 
     const handleSubmit = () => {
@@ -55,12 +50,9 @@ export default function PostBlog() {
             titleError: "",
             contentError: "",
             thumbnailError: "",
-            userImageError: "",
-            authorError: "",
-            emailError: "",
         };
         let isValid = true;
-
+    
         if (formData.title.trim() === "") {
             errors.titleError = "Title is required";
             isValid = false;
@@ -73,19 +65,7 @@ export default function PostBlog() {
             errors.thumbnailError = "Thumbnail is required";
             isValid = false;
         }
-        if (formData.author.trim() === "") {
-            errors.authorError = "Author Name is required";
-            isValid = false;
-        }
-        if (formData.email.trim() === "") {
-            errors.emailError = "Author Email is required";
-            isValid = false;
-        }
-        if (formData.userImage.trim() === "") {
-            errors.userImageError = "User Image is required";
-            isValid = false;
-        }
-
+    
         setFormErrors(errors);
         if (isValid) {
             const publishData = async () => {
@@ -99,14 +79,14 @@ export default function PostBlog() {
                     body: JSON.stringify(formData),
                 });
                 if (response.ok) {
-                    const responsedata = await response.json()
+                    const responsedata = await response.json();
                     console.log("Form submitted:", responsedata);
                     setOpenDialog(true);
                 } else {
-
+                    alert('Something went wrong !')
                 }
-            }
-            publishData()
+            };
+            publishData();
             setFormData({
                 title: "",
                 content: "",
@@ -119,20 +99,33 @@ export default function PostBlog() {
                 titleError: "",
                 contentError: "",
                 thumbnailError: "",
-                userImageError: "",
-                authorError: "",
-                emailError: "",
             });
         } else {
             console.log("Form validation failed");
         }
     };
+    
+    useEffect(() => {
+        const storedUserImage = localStorage.getItem('img');
+        const storedAuthor = localStorage.getItem('name');
+        const storedEmail = localStorage.getItem('email');
+
+        if (storedUserImage && storedAuthor && storedEmail) {
+            setFormData((prevData) => ({
+                ...prevData,
+                userImage: storedUserImage,
+                author: storedAuthor,
+                email: storedEmail,
+            }));
+        }
+    }, []);
 
     return (
         <div>
             <Helmet>
                 <title>Publish</title>
             </Helmet>
+            {/* @ts-ignore */}
             <Header />
             <div className="fade-in px-9">
                 <div className="grid w-full gap-4">
@@ -140,14 +133,14 @@ export default function PostBlog() {
                         <h3 className="text-2xl font-semibold">
                             Title
                         </h3>
-                        <input id="title" className="rounded-md border border-grey-500 px-3 w-full" type="text" value={formData.title} onChange={handleInputChange} />
+                        <input id="title" className="rounded-sm border border-grey-500 px-3 w-full" type="text" value={formData.title} onChange={handleInputChange} />
                         {formErrors.titleError && <span className="text-[#F4511E]">{formErrors.titleError}</span>}
                     </div>
                     <div className="grid gap-1.5">
                         <h5 className="text-2xl font-semibold">
                             Blog Content
                         </h5>
-                        <textarea id="content" className="py-3 rounded-md border border-grey-500 px-3 w-full min-h-[250px]" value={formData.content} onChange={handleInputChange} />
+                        <textarea id="content" className="py-3 rounded-sm border border-grey-500 px-3 w-full min-h-[250px]" value={formData.content} onChange={handleInputChange} />
                         {formErrors.contentError && <span className="text-[#F4511E]">{formErrors.contentError}</span>}
                     </div>
                     <div className="grid gap-1.5">
@@ -155,30 +148,9 @@ export default function PostBlog() {
                             Thumbnail
                         </h5>
                         <Tooltip title="Please Provide Network image address" arrow>
-                            <input id="thumbnail" className="rounded-md border border-grey-500 px-3 w-full" type="text" value={formData.thumbnail} onChange={handleInputChange} />
+                            <input id="thumbnail" className="rounded-sm border border-grey-500 px-3 w-full" type="text" value={formData.thumbnail} onChange={handleInputChange} />
                         </Tooltip>
                         {formErrors.thumbnailError && <span className="text-[#F4511E]">{formErrors.thumbnailError}</span>}
-                    </div>
-                    <div className="grid gap-1.5">
-                        <h5 className="text-1xl font-semibold">
-                            Author Name
-                        </h5>
-                        <input id="author" className="rounded-md border border-grey-500 px-3 w-full" type="text" value={formData.author} onChange={handleInputChange} />
-                        {formErrors.authorError && <span className="text-[#F4511E]">{formErrors.authorError}</span>}
-                    </div>
-                    <div className="grid gap-1.5">
-                        <h5 className="text-1xl font-semibold">
-                            Author Email
-                        </h5>
-                        <input id="email" className="rounded-md border border-grey-500 px-3 w-full" type="email" value={formData.email} onChange={handleInputChange} />
-                        {formErrors.emailError && <span className="text-[#F4511E]">{formErrors.emailError}</span>}
-                    </div>
-                    <div className="grid gap-1.5">
-                        <h5 className="text-1xl font-semibold">User Image</h5>
-                        <Tooltip title="Please Provide Network image address" arrow>
-                            <input id="userImage" className="rounded-md border border-grey-500 px-3 w-full" type="text" value={formData.userImage} onChange={handleInputChange} />
-                        </Tooltip>
-                        {formErrors.userImageError && <span className="text-[#F4511E]">{formErrors.userImageError}</span>}
                     </div>
                     <Tooltip title="Submitting this Content will Publish your Blog on the Website" arrow>
                         <button className="bg-[#212121] mb-10 py-1 px-3 rounded-lg text-white hover:text-white hover:bg-[#9E9E9E] w-[100px]" onClick={handleSubmit}>Submit</button>

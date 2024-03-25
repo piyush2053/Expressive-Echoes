@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { URL } from '../../Utils/contants.js';
+import { URL } from '../../Utils/constants.js';
 import '../../index.css';
 import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header.tsx";
 import { Helmet } from "react-helmet-async";
 import { useProvider } from "../../Store/Provider.tsx";
-import { CircularProgress } from "@mui/material"; 
+import { CircularProgress } from "@mui/material";
+import { fetchUserDataByEmail } from "../../Utils/functions.ts";
 
 interface Blog {
     id: number;
@@ -16,12 +17,46 @@ interface Blog {
     userImage: string;
     author: string;
 }
+
+interface UserData {
+    name: string;
+    netImg: string;
+  }
+
 export default function Home() {
+    const [userData, setUserData] = useState<UserData>({ name: '', netImg: '' });
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { updateBlog } = useProvider();
+    const [headerKey, setHeaderKey] = useState(0);
+    const Navigate = useNavigate()
 
+    const fetchUser = async () => {
+        const email = localStorage.getItem('email');
+        if (email) {
+            setIsLoading(true);
+            try {
+                const userData = await fetchUserDataByEmail(email);
+                if (userData) {
+                    setUserData(userData);
+                    localStorage.setItem('name', userData.name);
+                    localStorage.setItem('img', userData.netImg);
+                } else {
+                    console.error('User data is null.');
+                }
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setIsLoading(false);
+            }
+        } else {
+            alert('Something weird, Please login again!')
+            setTimeout(() => {
+                Navigate('/')
+            }, 1500)
+        }
+    };
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true)
@@ -45,9 +80,14 @@ export default function Home() {
                 console.log(error, 'error');
             }
         };
+        fetchUser();
         fetchData();
         // eslint-disable-next-line 
     }, []);
+
+    useEffect(() => {
+        setHeaderKey(prevKey => prevKey + 1);
+      }, [userData]);
 
     const navigate = useNavigate();
 
@@ -64,7 +104,7 @@ export default function Home() {
             <Helmet>
                 <title>PlainBlogPost</title>
             </Helmet>
-            <Header />
+            <Header name={userData?.name} img={userData?.netImg} key={headerKey}  />
             <main className="min-h-screen fade-in">
                 <div className="px-4 lg:px-6 xl:col-span-2 xl:px-8">
                     <div className="space-y-12">
@@ -83,14 +123,15 @@ export default function Home() {
                                 />
                             </div>
                         </div>
-                        {isLoading ? <CircularProgress /> : <div className="fade-in grid gap-4 sm:grid-cols-3">
+                        {isLoading ? <CircularProgress /> : 
+                        <div className="fade-in grid gap-4 sm:grid-cols-4">
                             {filteredBlogs.length === 0 ? (
                                 <div className="text-center text-gray-500 dark:text-gray-400">
                                     No results for "{searchTerm}"
                                 </div>
                             ) : (
                                 filteredBlogs.map((value) => (
-                                    <div key={value.id} className="fade-in space-y-2 cursor-pointer hover:bg-[#EEEEEE] rounded-lg p-2" onClick={() => handleBlogPost(value.title)}>
+                                    <div key={value.id} className="fade-in space-y-2 cursor-pointer rounded-lg p-2 hover:shadow-2xl mb-10" onClick={() => handleBlogPost(value.title)}>
                                         <img alt="blogThumbnail" className="h-20 rounded-lg" src={value?.thumbnail} />
                                         <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
                                         <p className="truncate">{value?.content}</p>
