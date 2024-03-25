@@ -63,35 +63,37 @@ const PostHandle = () => {
                     <CircularProgress color="inherit" size={30}/>
                 </div>
             ) : (
-                <table className="w-full table-fixed">
-                    <thead>
-                        <tr>
-                            <th className="w-1/3">Title</th>
-                            <th className="w-1/3">Author</th>
-                            <th className="w-1/3">Thumbnail</th>
-                            <th className="w-1/3">Date</th>
-                            <th className="w-1/3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {blogs.map(blog => (
-                            <tr key={blog._id}>
-                                <td>{blog.title}</td>
-                                <td>{blog.author}</td>
-                                <td><img src={blog.thumbnail} alt="" className="h-10 rounded-md" /></td>
-                                <td>{blog.date}</td>
-                                <td>
-                                    <button
-                                        onClick={() => handleDelete(blog._id)}
-                                        className="bg-red-500 text-white px-2 py-1 rounded-sm"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="w-full table-auto">
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-2">Title</th>
+                                <th className="px-4 py-2">Author</th>
+                                <th className="px-4 py-2">Thumbnail</th>
+                                <th className="px-4 py-2">Date</th>
+                                <th className="px-4 py-2">Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {blogs.map(blog => (
+                                <tr key={blog._id}>
+                                    <td className="border px-4 py-2">{blog.title}</td>
+                                    <td className="border px-4 py-2">{blog.author}</td>
+                                    <td className="border px-4 py-2"><img src={blog.thumbnail} alt="" className="h-10 rounded-md" /></td>
+                                    <td className="border px-4 py-2">{blog.date}</td>
+                                    <td className="border px-4 py-2">
+                                        <button
+                                            onClick={() => handleDelete(blog._id)}
+                                            className="bg-red-500 text-white px-2 py-1 rounded-sm"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

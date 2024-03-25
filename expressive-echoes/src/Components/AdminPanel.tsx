@@ -11,7 +11,7 @@ const AdminSidePanel: React.FC<AdminSidePanelProps> = ({ currentPage, setCurrent
   };
 
   return (
-    <div className="bg-gray-800 text-white w-1/6 flex flex-col">
+    <div className="bg-gray-800 text-white flex flex-col lg:w-1/6 xl:w-1/5">
       <div className="p-4 flex justify-center mt-5">
         <h1 className="text-2xl font-bold">Admin</h1>
         <div className="rounded-full h-3 w-3 bg-[green] mt-3 ml-2"></div>
@@ -24,14 +24,14 @@ const AdminSidePanel: React.FC<AdminSidePanelProps> = ({ currentPage, setCurrent
           Posts
         </button>
         <button
-        disabled={true}
+          disabled={true}
           className={`py-2 px-4 rounded-sm cursor-not-allowed focus:outline-none ${currentPage === 'users' ? 'bg-blue-500' : 'bg-gray-700 hover:bg-gray-600'}`}
           onClick={() => handlePageChange('users')}
         >
           Users Management <div className="bg-[green] p-1 text-sm rounded-sm mt-1">Coming Soon</div>
         </button>
         <button
-        disabled={true}
+          disabled={true}
           className={`py-2 px-4 cursor-not-allowed rounded-sm focus:outline-none ${currentPage === 'content' ? 'bg-blue-500' : 'bg-gray-700 hover:bg-gray-600'}`}
           onClick={() => handlePageChange('content')}
         >
