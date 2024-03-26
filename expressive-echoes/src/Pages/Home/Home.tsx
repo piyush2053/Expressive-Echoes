@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../Components/Header.tsx";
 import { Helmet } from "react-helmet-async";
 import { useProvider } from "../../Store/Provider.tsx";
-import { CircularProgress } from "@mui/material";
 import { fetchUserDataByEmail } from "../../Utils/functions.ts";
 
 interface Blog {
@@ -21,7 +20,7 @@ interface Blog {
 interface UserData {
     name: string;
     netImg: string;
-  }
+}
 
 export default function Home() {
     const [userData, setUserData] = useState<UserData>({ name: '', netImg: '' });
@@ -35,7 +34,6 @@ export default function Home() {
     const fetchUser = async () => {
         const email = localStorage.getItem('email');
         if (email) {
-            setIsLoading(true);
             try {
                 const userData = await fetchUserDataByEmail(email);
                 if (userData) {
@@ -45,10 +43,8 @@ export default function Home() {
                 } else {
                     console.error('User data is null.');
                 }
-                setIsLoading(false);
             } catch (error) {
                 console.error('Error fetching user data:', error);
-                setIsLoading(false);
             }
         } else {
             alert('Something weird, Please login again!')
@@ -87,7 +83,7 @@ export default function Home() {
 
     useEffect(() => {
         setHeaderKey(prevKey => prevKey + 1);
-      }, [userData]);
+    }, [userData]);
 
     const navigate = useNavigate();
 
@@ -98,13 +94,13 @@ export default function Home() {
     const filteredBlogs = blogs.filter((blog) =>
         blog.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-
+    const items = Array.from({ length: 8 }, (_, index) => index);
     return (
         <div>
             <Helmet>
                 <title>PlainBlogPost</title>
             </Helmet>
-            <Header name={userData?.name} img={userData?.netImg} key={headerKey}  />
+            <Header name={userData?.name} img={userData?.netImg} key={headerKey} />
             <main className="min-h-screen fade-in">
                 <div className="px-4 lg:px-6 xl:col-span-2 xl:px-8">
                     <div className="space-y-12">
@@ -123,39 +119,55 @@ export default function Home() {
                                 />
                             </div>
                         </div>
-                        {isLoading ? <CircularProgress /> : 
-                        <div className="fade-in grid gap-4 sm:grid-cols-4">
-                            {filteredBlogs.length === 0 ? (
-                                <div className="text-center text-gray-500 dark:text-gray-400">
-                                    No results for "{searchTerm}"
-                                </div>
-                            ) : (
-                                filteredBlogs.map((value) => (
-                                    <div key={value.id} className="fade-in space-y-2 cursor-pointer rounded-lg p-2 hover:shadow-2xl mb-10" onClick={() => handleBlogPost(value.title)}>
-                                        <img alt="blogThumbnail" className="h-20 rounded-lg" src={value?.thumbnail} />
-                                        <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
-                                        <p className="truncate">{value?.content}</p>
-                                        <p className="text-gray-500 dark:text-gray-400">Posted on {value.date}</p>
+                        {isLoading ?
+                            <div className="fade-in grid gap-4 sm:grid-cols-4">
+                                {items.map((item, index) => (
+                                    <div key={index} className="fade-in animate-pulse space-y-2 cursor-pointer rounded-lg p-2 shadow-2xl mb-10">
+                                        <div className="h-20 rounded-lg animate-pulse bg-[#90A4AE]"></div>
+                                        <p className="text-2xl font-semibold animate-pulse tracking-tight bg-[#90A4AE] rounded-lg"></p>
+                                        <p className="truncate bg-[#90A4AE] animate-pulse rounded-lg"></p>
+                                        <p className="text-gray-500 dark:text-gray-400 bg-[#90A4AE] rounded-lg animate-pulse"></p>
                                         <div className="grid items-center gap-2 text-sm">
                                             <div className="flex items-center space-x-2">
-                                                <img
-                                                    alt="Author"
-                                                    className="rounded-full"
-                                                    height={20}
-                                                    src={value?.userImage}
-                                                    style={{
-                                                        aspectRatio: "32/32",
-                                                        objectFit: "cover",
-                                                    }}
-                                                    width={20}
-                                                />
-                                                <p className="font-medium">{value?.author}</p>
+                                                <div className="w-20 h-20 bg-[#90A4AE] rounded-full animate-pulse"></div>
+                                                <p className="font-medium bg-[#90A4AE] animate-pulse"></p>
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            )}
-                        </div>}
+                                ))}
+                            </div> :
+                            <div className="fade-in grid gap-4 sm:grid-cols-4">
+                                {filteredBlogs.length === 0 ? (
+                                    <div className="text-center text-gray-500 dark:text-gray-400">
+                                        No results for "{searchTerm}"
+                                    </div>
+                                ) : (
+                                    filteredBlogs.map((value) => (
+                                        <div key={value.id} className="fade-in space-y-2 cursor-pointer rounded-lg p-2 hover:shadow-2xl mb-10" onClick={() => handleBlogPost(value.title)}>
+                                            <img alt="blogThumbnail" className="h-20 rounded-lg" src={value?.thumbnail} />
+                                            <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
+                                            <p className="truncate">{value?.content}</p>
+                                            <p className="text-gray-500 dark:text-gray-400">Posted on {value.date}</p>
+                                            <div className="grid items-center gap-2 text-sm">
+                                                <div className="flex items-center space-x-2">
+                                                    <img
+                                                        alt="Author"
+                                                        className="rounded-full"
+                                                        height={20}
+                                                        src={value?.userImage}
+                                                        style={{
+                                                            aspectRatio: "32/32",
+                                                            objectFit: "cover",
+                                                        }}
+                                                        width={20}
+                                                    />
+                                                    <p className="font-medium">{value?.author}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>}
 
                     </div>
                 </div>
