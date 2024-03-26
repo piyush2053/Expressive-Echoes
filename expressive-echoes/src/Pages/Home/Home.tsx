@@ -120,22 +120,7 @@ export default function Home() {
                             </div>
                         </div>
                         {isLoading ?
-                            <div className="fade-in grid gap-4 sm:grid-cols-4">
-                                {items.map((item, index) => (
-                                    <div key={index} className="fade-in animate-pulse space-y-2 cursor-pointer rounded-lg p-2 shadow-2xl mb-10">
-                                        <div className="h-20 rounded-lg animate-pulse bg-[#90A4AE]"></div>
-                                        <p className="text-2xl font-semibold animate-pulse tracking-tight bg-[#90A4AE] rounded-lg"></p>
-                                        <p className="truncate bg-[#90A4AE] animate-pulse rounded-lg"></p>
-                                        <p className="text-gray-500 dark:text-gray-400 bg-[#90A4AE] rounded-lg animate-pulse"></p>
-                                        <div className="grid items-center gap-2 text-sm">
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-20 h-20 bg-[#90A4AE] rounded-full animate-pulse"></div>
-                                                <p className="font-medium bg-[#90A4AE] animate-pulse"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div> :
+                            <LoaderHome items={items} /> :
                             <div className="fade-in grid gap-4 sm:grid-cols-4">
                                 {filteredBlogs.length === 0 ? (
                                     <div className="text-center text-gray-500 dark:text-gray-400">
@@ -143,7 +128,7 @@ export default function Home() {
                                     </div>
                                 ) : (
                                     filteredBlogs.map((value) => (
-                                        <div key={value.id} className="fade-in space-y-2 cursor-pointer rounded-lg p-2 hover:shadow-2xl mb-10" onClick={() => handleBlogPost(value.title)}>
+                                        <div key={value.id} className="fade-in space-y-2 cursor-pointer rounded-lg p-2 shadow-xl hover:shadow-2xl mb-10" onClick={() => handleBlogPost(value.title)}>
                                             <img alt="blogThumbnail" className="h-20 rounded-lg" src={value?.thumbnail} />
                                             <h2 className="text-2xl font-semibold tracking-tight">{value?.title}</h2>
                                             <p className="truncate">{value?.content}</p>
@@ -175,3 +160,26 @@ export default function Home() {
         </div>
     );
 }
+
+
+function LoaderHome({ items }: { items: number[] }) {
+    return (
+      <div className="fade-in grid gap-4 sm:grid-cols-4">
+        {items.map((item, index) => (
+          <div key={index} className="fade-in animate-pulse space-y-2 cursor-pointer rounded-lg p-2 shadow-2xl mb-10">
+            <div className="h-20 rounded-lg animate-pulse bg-[#90A4AE]"></div>
+            <p className="text-2xl font-semibold animate-pulse tracking-tight bg-[#90A4AE] rounded-lg"></p>
+            <p className="truncate bg-[#90A4AE] animate-pulse rounded-lg"></p>
+            <p className="text-gray-500 dark:text-gray-400 bg-[#90A4AE] rounded-lg animate-pulse"></p>
+            <div className="grid items-center gap-2 text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-20 h-20 bg-[#90A4AE] rounded-full animate-pulse"></div>
+                <p className="font-medium bg-[#90A4AE] animate-pulse"></p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  
